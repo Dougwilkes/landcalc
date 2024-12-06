@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land Development Profit Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #004090;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-left: 5px solid #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Land Development Profit Calculator</h1>
+        <form id="calculatorForm">
+            <h2>Input Details</h2>
+            <div class="input-group">
+                <label for="landCostPerAcre">Land Purchase Cost per Acre ($):</label>
+                <input type="number" id="landCostPerAcre" value="7000">
+            </div>
+            <div class="input-group">
+                <label for="totalAcres">Total Acres:</label>
+                <input type="number" id="totalAcres" value="28">
+            </div>
+            <div class="input-group">
+                <label for="lotPriceEntitled">Lot Price (Entitled) ($):</label>
+                <input type="number" id="lotPriceEntitled" value="8000">
+            </div>
+            <div class="input-group">
+                <label for="lotPriceDeveloped">Lot Price (Developed) ($):</label>
+                <input type="number" id="lotPriceDeveloped" value="35000">
+            </div>
+            <div class="input-group">
+                <label for="numLots">Number of Lots:</label>
+                <input type="number" id="numLots" value="120">
+            </div>
+            <div class="input-group">
+                <label for="entitlementCosts">Entitlement Costs ($):</label>
+                <input type="number" id="entitlementCosts" value="75000">
+            </div>
+            <div class="input-group">
+                <label for="sitePrepCost">Site Preparation Cost per Lot ($):</label>
+                <input type="number" id="sitePrepCost" value="2000">
+            </div>
+            <div class="input-group">
+                <label for="roadCostPerFoot">Road Construction Cost per Linear Foot ($):</label>
+                <input type="number" id="roadCostPerFoot" value="300">
+            </div>
+            <div class="input-group">
+                <label for="roadLength">Road Length (feet):</label>
+                <input type="number" id="roadLength" value="5280">
+            </div>
+            <div class="input-group">
+                <label for="utilityCostPerLot">Utility Installation Cost per Lot ($):</label>
+                <input type="number" id="utilityCostPerLot" value="7000">
+            </div>
+            <div class="input-group">
+                <label for="professionalFees">Additional Professional Fees ($):</label>
+                <input type="number" id="professionalFees" value="50000">
+            </div>
+            <div class="input-group">
+                <label for="contingencyPercent">Contingency (% of hard costs):</label>
+                <input type="number" id="contingencyPercent" value="10">
+            </div>
+            <button type="button" onclick="calculateProfit()">Calculate</button>
+        </form>
+        <div id="results" class="result" style="display: none;">
+            <h2>Results</h2>
+            <p id="optionAResult"></p>
+            <p id="optionBResult"></p>
+        </div>
+    </div>
+    <script>
+        function calculateProfit() {
+            const landCostPerAcre = parseFloat(document.getElementById('landCostPerAcre').value);
+            const totalAcres = parseFloat(document.getElementById('totalAcres').value);
+            const lotPriceEntitled = parseFloat(document.getElementById('lotPriceEntitled').value);
+            const lotPriceDeveloped = parseFloat(document.getElementById('lotPriceDeveloped').value);
+            const numLots = parseFloat(document.getElementById('numLots').value);
+            const entitlementCosts = parseFloat(document.getElementById('entitlementCosts').value);
+            const sitePrepCost = parseFloat(document.getElementById('sitePrepCost').value);
+            const roadCostPerFoot = parseFloat(document.getElementById('roadCostPerFoot').value);
+            const roadLength = parseFloat(document.getElementById('roadLength').value);
+            const utilityCostPerLot = parseFloat(document.getElementById('utilityCostPerLot').value);
+            const professionalFees = parseFloat(document.getElementById('professionalFees').value);
+            const contingencyPercent = parseFloat(document.getElementById('contingencyPercent').value);
+
+            // Calculate costs
+            const landPurchaseCost = landCostPerAcre * totalAcres;
+            const entitledRevenue = lotPriceEntitled * numLots;
+            const optionAProfit = entitledRevenue - (landPurchaseCost + entitlementCosts);
+
+            const sitePrepTotal = sitePrepCost * numLots;
+            const roadCostTotal = roadCostPerFoot * roadLength;
+            const utilityTotal = utilityCostPerLot * numLots;
+            const hardCosts = sitePrepTotal + roadCostTotal + utilityTotal;
+            const contingency = (contingencyPercent / 100) * hardCosts;
+            const developmentCosts = hardCosts + contingency + professionalFees;
+            const totalProjectCost = landPurchaseCost + developmentCosts;
+            const developedRevenue = lotPriceDeveloped * numLots;
+            const optionBProfit = developedRevenue - totalProjectCost;
+
+            // Display results
+            document.getElementById('optionAResult').textContent = `Option A (Sell Entitled Land): Profit = $${optionAProfit.toFixed(2)}`;
+            document.getElementById('optionBResult').textContent = `Option B (Develop and Sell Lots): Profit = $${optionBProfit.toFixed(2)}`;
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
